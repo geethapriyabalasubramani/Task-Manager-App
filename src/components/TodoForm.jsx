@@ -8,6 +8,7 @@ const TodoForm = ({ onSubmit, onClose }) => {
   const [tasks, setTasks] = useState(['']);
   const [color, setColor] = useState('#fff9c4');
   const [selectedList, setSelectedList] = useState('personal');
+  const [date, setDate] = useState('');
 
   const colors = [
     { value: '#fff9c4', label: 'Yellow' },
@@ -41,7 +42,8 @@ const TodoForm = ({ onSubmit, onClose }) => {
         title,
         tasks: filteredTasks,
         color,
-        listId: selectedList
+        listId: selectedList,
+        date
       });
       onClose();
     }
@@ -59,6 +61,15 @@ const TodoForm = ({ onSubmit, onClose }) => {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Enter title"
           required
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Date</label>
+        <input
+          type="date"
+          value={date}
+          onChange={e => setDate(e.target.value)}
         />
       </div>
 

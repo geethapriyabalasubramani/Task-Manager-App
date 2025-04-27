@@ -100,6 +100,64 @@
   color: #333;
 }
 
+.add-list-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.add-list-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.add-list-input:focus {
+  border-color: #2196f3;
+}
+
+.add-list-icon {
+  font-size: 1.2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.5rem;
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.add-list-icon:focus {
+  border-color: #2196f3;
+}
+
+.add-list-save, .add-list-cancel {
+  background: none;
+  border: none;
+  color: #2196f3;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.add-list-save:hover {
+  background: #e3f2fd;
+}
+
+.add-list-cancel {
+  color: #f44336;
+}
+
+.add-list-cancel:hover {
+  background: #ffcdd2;
+}
+
 .tags {
   display: flex;
   flex-wrap: wrap;

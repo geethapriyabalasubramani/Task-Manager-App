@@ -9,6 +9,11 @@ export const ListProvider = ({ children }) => {
     list1: { count: 0, icon: '📝', label: 'List 1' }
   });
   const [activeList, setActiveList] = useState(null); // null means show all
+  const [dateFilter, setDateFilter] = useState(null); // null, 'today', 'upcoming', 'calendar'
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().slice(0, 10);
+  });
 
   const incrementListCount = (listId) => {
     setLists(prev => ({
@@ -30,8 +35,28 @@ export const ListProvider = ({ children }) => {
     }));
   };
 
+  const addList = (label, icon = '🗂️') => {
+    const id = label.toLowerCase().replace(/\s+/g, '_') + '_' + Date.now();
+    setLists(prev => ({
+      ...prev,
+      [id]: { count: 0, icon, label }
+    }));
+    return id;
+  };
+
   return (
-    <ListContext.Provider value={{ lists, incrementListCount, decrementListCount, activeList, setActiveList }}>
+    <ListContext.Provider value={{
+      lists,
+      incrementListCount,
+      decrementListCount,
+      activeList,
+      setActiveList,
+      addList,
+      dateFilter,
+      setDateFilter,
+      selectedDate,
+      setSelectedDate
+    }}>
       {children}
     </ListContext.Provider>
   );

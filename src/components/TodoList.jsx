@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import TodoCard from './TodoCard';
 import Modal from './Modal';
 import TodoForm from './TodoForm';
 import { useList } from '../context/ListContext';
 import './TodoList.css';
 
-const TodoList = () => {
-  const [todos, setTodos] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { activeList, setActiveList, lists } = useList();
+function isSameDay(dateStr, selectedDate) {
+  if (!dateStr || !selectedDate) return false;
+  const d = new Date(dateStr);
+  const s = new Date(selectedDate);
+  return d.getFullYear() === s.getFullYear() &&
+    d.getMonth() === s.getMonth() &&
+    d.getDate() === s.getDate();
+}
+
+function isUpcoming(dateStr, selectedDate) {
+  if (!dateStr || !selectedDate) return false;
+  const s = new Date(selectedDate);
+  s.setHours(0, 0, 0, 0);
+  const d = new Date(dateStr);
+  d.setHours(0, 0, 0, 0);
+  return d > s;
+}
+
+const TodoList = ({ todos, setTodos }) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const { activeList, setActiveList, lists, dateFilter, setDateFilter, selectedDate } = useList();
 
   const addTodo = (newTodo) => {
     setTodos([...todos, { ...newTodo, id: Date.now() }]);
@@ -18,10 +35,24 @@ const TodoList = () => {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
-  // Filter todos by activeList if set
-  const filteredTodos = activeList
-    ? todos.filter(todo => todo.listId === activeList)
-    : todos;
+  let filteredTodos = todos;
+  if (activeList) {
+    filteredTodos = filteredTodos.filter(todo => todo.listId === activeList);
+  }
+  if (dateFilter === 'today') {
+    filteredTodos = filteredTodos.filter(todo => isSameDay(todo.date, selectedDate));
+  } else if (dateFilter === 'upcoming') {
+    filteredTodos = filteredTodos.filter(todo => isUpcoming(todo.date, selectedDate));
+  } else if (dateFilter === 'calendar') {
+    filteredTodos = filteredTodos.filter(todo => todo.date);
+  }
+  // If no filter, show all todos (Sticky Wall)
+
+  // Clear both filters
+  const clearFilters = () => {
+    setActiveList(null);
+    setDateFilter(null);
+  };
 
   return (
     <div className="todo-container">
@@ -31,7 +62,13 @@ const TodoList = () => {
       {activeList && (
         <div className="filter-indicator">
           Filtering: <b>{lists[activeList]?.label}</b>
-          <button className="clear-filter" onClick={() => setActiveList(null)} title="Clear filter">×</button>
+          <button className="clear-filter" onClick={clearFilters} title="Clear filter">×</button>
+        </div>
+      )}
+      {dateFilter && (
+        <div className="filter-indicator">
+          Filtering: <b>{dateFilter === 'today' ? `Today (${selectedDate})` : dateFilter.charAt(0).toUpperCase() + dateFilter.slice(1)}</b>
+          <button className="clear-filter" onClick={clearFilters} title="Clear filter">×</button>
         </div>
       )}
       <div className="todo-grid">
